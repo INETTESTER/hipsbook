@@ -4,13 +4,13 @@
 # Mode
 # ======================
 # local | master | worker
-MODE="master"
+MODE="local"
 
-# กรณี Worker
+# ใช้เฉพาะ worker
 MASTER_HOST="10.0.0.1"
 
-# กรณี Master
-EXPECT_WORKERS=1
+# ใช้เฉพาะ master
+EXPECT_WORKERS=2
 
 # ======================
 # Test Config
@@ -25,14 +25,12 @@ HOST="https://hipsbook.gbydigitaltech.co.th"
 PROFILE="realistic"
 
 # ======================
-# Report Folder
+# Report Config
 # ======================
 DATE=$(date +"%d-%m-%Y")
 TIME=$(date +"%H-%M-%S")
 
 REPORT_DIR="report/${USERS}users_${DATE}_${TIME}"
-
-mkdir -p "$REPORT_DIR"
 
 # ======================
 # Display Config
@@ -43,14 +41,19 @@ echo " Users       : $USERS"
 echo " Spawn Rate  : $SPAWN_RATE"
 echo " Run Time    : $RUN_TIME"
 echo " Profile     : $PROFILE"
-echo " Report Dir  : $REPORT_DIR"
+
+if [ "$MODE" != "worker" ]; then
+    echo " Report Dir  : $REPORT_DIR"
+fi
+
 echo "==================================="
 
 # ======================
-# Run
+# Local Mode
 # ======================
-
 if [ "$MODE" = "local" ]; then
+
+    mkdir -p "$REPORT_DIR"
 
     TEST_PROFILE=$PROFILE py -m locust \
       -f locustfile.py \
@@ -62,7 +65,12 @@ if [ "$MODE" = "local" ]; then
       --html "$REPORT_DIR/report.html" \
       --csv "$REPORT_DIR/result"
 
+# ======================
+# Master Mode
+# ======================
 elif [ "$MODE" = "master" ]; then
+
+    mkdir -p "$REPORT_DIR"
 
     TEST_PROFILE=$PROFILE py -m locust \
       -f locustfile.py \
@@ -76,6 +84,9 @@ elif [ "$MODE" = "master" ]; then
       --html "$REPORT_DIR/report.html" \
       --csv "$REPORT_DIR/result"
 
+# ======================
+# Worker Mode
+# ======================
 elif [ "$MODE" = "worker" ]; then
 
     TEST_PROFILE=$PROFILE py -m locust \
@@ -95,5 +106,12 @@ fi
 # ======================
 echo ""
 echo "==================================="
-echo " Finished"
+
+if [ "$MODE" = "worker" ]; then
+    echo " Worker Finished"
+else
+    echo " Report saved to:"
+    echo " $REPORT_DIR"
+fi
+
 echo "==================================="

@@ -526,4 +526,8 @@ The table below is a project-specific troubleshooting guide based on common HTTP
 - Locust distributed load generation: https://docs.locust.io/en/stable/running-distributed.html
 - Locust increasing request rate: https://docs.locust.io/en/stable/increasing-request-rate.html
 - Locust API reference for `FastHttpUser`: https://docs.locust.io/en/stable/api.html
+
+
+## install
+https://www.python.org/downloads/windows/?utm_source=chatgpt.com
 py -m pip install -r requirements.txt
